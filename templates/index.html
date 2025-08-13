@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}MMCalc Web - Home{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-8 text-center">
+            <div class="hero-ascii mb-4">
+                <pre class="text-danger mb-0"> ██████   ██████<span class="text-success"> ██████   ██████   </span><span class="text-warning">█████████            ████          </span></pre>
+                <pre class="text-danger mb-0">░░██████ ██████ <span class="text-success">░░██████ ██████   </span><span class="text-warning">███░░░░░███          ░░███          </span></pre>
+                <pre class="text-danger mb-0"> ░███░█████░███  <span class="text-success">░███░█████░███  </span><span class="text-warning">███     ░░░   ██████   ░███   ██████ </span></pre>
+                <pre class="text-danger mb-0"> ░███░░███ ░███  <span class="text-success">░███░░███ ░███ </span><span class="text-warning">░███          ░░░░░███  ░███  ███░░███</span></pre>
+                <pre class="text-danger mb-0"> ░███ ░░░  ░███  <span class="text-success">░███ ░░░  ░███ </span><span class="text-warning">░███           ███████  ░███ ░███ ░░░ </span></pre>
+                <pre class="text-danger mb-0"> ░███      ░███  <span class="text-success">░███      ░███ </span><span class="text-warning">░░███     ███ ███░░███  ░███ ░███  ███</span></pre>
+                <pre class="text-danger mb-0"> █████     █████ <span class="text-success">█████     █████ </span><span class="text-warning">░░█████████ ░░████████ █████░░██████ </span></pre>
+                <pre class="text-danger mb-0">░░░░░     ░░░░░ <span class="text-success">░░░░░     ░░░░░   </span><span class="text-warning">░░░░░░░░░   ░░░░░░░░ ░░░░░  ░░░░░░  </span></pre>
+            </div>
+            
+            <h1 class="display-6 mb-3">Molar Mass Calculator</h1>
+            <p class="lead mb-4">
+                Professional chemistry tool for calculating molar masses, reagent masses, and moles
+                with precision formatting for analytical chemistry applications.
+            </p>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0">
+                        <div class="card-body text-center">
+                            <i class="fas fa-flask fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title">IUPAC Standards</h5>
+                            <p class="card-text small">
+                                Based on Atomic Weights of the Elements 1995 published by IUPAC.
+                                Contains atomic masses up to Uranium with scientific precision.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0">
+                        <div class="card-body text-center">
+                            <i class="fas fa-calculator fa-3x text-success mb-3"></i>
+                            <h5 class="card-title">Advanced Parsing</h5>
+                            <p class="card-text small">
+                                Handles complex formulas with parentheses and nested structures.
+                                Examples: Ca(OH)₂, CH₃(CH₂)₃OH, Mg₃(PO₄)₂
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0">
+                        <div class="card-body text-center">
+                            <i class="fas fa-chart-line fa-3x text-warning mb-3"></i>
+                            <h5 class="card-title">Precision Results</h5>
+                            <p class="card-text small">
+                                Molar masses to 3 decimal places, reagent masses to 4 decimal places
+                                (analytical balance standard), moles to 6 decimal places.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calculation Options -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-tools me-2"></i>Choose Calculation Mode
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <a href="{{ url_for('calculate', mode='1') }}" class="btn btn-outline-primary w-100 py-3 text-start">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-atom fa-2x me-3"></i>
+                                    <div>
+                                        <h5 class="mb-1">Mode 1: Calculate Molar Mass Only</h5>
+                                        <p class="mb-0 small text-muted">
+                                            Enter a chemical formula to calculate its molar mass in g/mol
+                                        </p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-12">
+                            <a href="{{ url_for('calculate', mode='2') }}" class="btn btn-outline-success w-100 py-3 text-start">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-balance-scale fa-2x me-3"></i>
+                                    <div>
+                                        <h5 class="mb-1">Mode 2: Calculate Molar Mass and Reagent Mass</h5>
+                                        <p class="mb-0 small text-muted">
+                                            Calculate both molar mass and the mass needed for a given number of moles
+                                        </p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-12">
+                            <a href="{{ url_for('calculate', mode='3') }}" class="btn btn-outline-warning w-100 py-3 text-start">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-vial fa-2x me-3"></i>
+                                    <div>
+                                        <h5 class="mb-1">Mode 3: Calculate Moles from Reagent Mass</h5>
+                                        <p class="mb-0 small text-muted">
+                                            Calculate the number of moles from a given mass of compound
+                                        </p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Access to Library -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-lg-8">
+            <div class="card border-secondary">
+                <div class="card-body text-center">
+                    <h5 class="card-title">
+                        <i class="fas fa-book me-2"></i>Compound Library
+                    </h5>
+                    <p class="card-text">
+                        Save commonly used compounds for quick access and reuse in calculations.
+                    </p>
+                    <a href="{{ url_for('library') }}" class="btn btn-secondary">
+                        <i class="fas fa-book-open me-2"></i>Manage Library
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

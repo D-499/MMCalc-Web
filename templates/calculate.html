@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block title %}MMCalc Web - Calculate{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Mode Header -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            {% if mode == '1' %}
+                                <i class="fas fa-atom me-2"></i>Mode 1: Calculate Molar Mass Only
+                            {% elif mode == '2' %}
+                                <i class="fas fa-balance-scale me-2"></i>Mode 2: Calculate Molar Mass and Reagent Mass
+                            {% elif mode == '3' %}
+                                <i class="fas fa-vial me-2"></i>Mode 3: Calculate Moles from Reagent Mass
+                            {% endif %}
+                        </h4>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-arrow-left me-1"></i>Back
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calculation Form -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="POST">
+                        <input type="hidden" name="mode" value="{{ mode }}">
+                        
+                        <!-- Chemical Formula Input -->
+                        <div class="mb-3">
+                            <label for="compound" class="form-label">
+                                <i class="fas fa-flask me-1"></i>Chemical Formula
+                            </label>
+                            <input type="text" 
+                                   class="form-control form-control-lg font-monospace" 
+                                   id="compound" 
+                                   name="compound" 
+                                   value="{{ compound if compound else '' }}"
+                                   placeholder="e.g., H2SO4, Ca(OH)2, CH3(CH2)3OH"
+                                   required>
+                            <div class="form-text">
+                                Enter the chemical formula. Supports parentheses and complex structures.
+                                <strong>Examples:</strong> H₂SO₄, Ca(OH)₂, CH₃(CH₂)₃OH, Mg₃(PO₄)₂
+                            </div>
+                        </div>
+
+                        <!-- Mode-specific inputs -->
+                        {% if mode == '2' %}
+                        <div class="mb-3">
+                            <label for="moles" class="form-label">
+                                <i class="fas fa-calculator me-1"></i>Number of Moles
+                            </label>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="moles" 
+                                   name="moles" 
+                                   step="any"
+                                   placeholder="Enter moles (e.g., 0.5, 1.25)"
+                                   required>
+                        </div>
+                        {% elif mode == '3' %}
+                        <div class="mb-3">
+                            <label for="mass" class="form-label">
+                                <i class="fas fa-weight me-1"></i>Mass (grams)
+                            </label>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="mass" 
+                                   name="mass" 
+                                   step="any"
+                                   placeholder="Enter mass in grams (e.g., 10.5, 25.0)"
+                                   required>
+                        </div>
+                        {% endif %}
+
+                        <!-- Verbose Mode Toggle -->
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" 
+                                       type="checkbox" 
+                                       id="verbose" 
+                                       name="verbose"
+                                       {{ 'checked' if verbose else '' }}>
+                                <label class="form-check-label" for="verbose">
+                                    <i class="fas fa-list-ul me-1"></i>Verbose Mode
+                                    <small class="text-muted">(Show detailed calculation breakdown)</small>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-calculator me-2"></i>Calculate
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Results -->
+            {% if results %}
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Calculation Results
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Basic Results -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="result-box p-3 border rounded">
+                                <h6 class="text-muted mb-2">Compound</h6>
+                                <h4 class="font-monospace text-primary">{{ results.compound }}</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="result-box p-3 border rounded">
+                                <h6 class="text-muted mb-2">Molar Mass</h6>
+                                <h4 class="text-info">{{ "%.3f"|format(results.molar_mass) }} g/mol</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mode-specific results -->
+                    {% if mode == '2' and 'reagent_mass' in results %}
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="result-box p-3 border rounded">
+                                <h6 class="text-muted mb-2">Moles</h6>
+                                <h4 class="text-secondary">{{ results.moles }} mol</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="result-box p-3 border rounded">
+                                <h6 class="text-muted mb-2">Reagent Mass</h6>
+                                <h4 class="text-warning">{{ "%.4f"|format(results.reagent_mass) }} g</h4>
+                            </div>
+                        </div>
+                    </div>
+                    {% elif mode == '3' and 'calculated_moles' in results %}
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="result-box p-3 border rounded">
+                                <h6 class="text-muted mb-2">Mass</h6>
+                                <h4 class="text-secondary">{{ results.mass }} g</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="result-box p-3 border rounded">
+                                <h6 class="text-muted mb-2">Calculated Moles</h6>
+                                <h4 class="text-success">{{ "%.6f"|format(results.calculated_moles) }} mol</h4>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Verbose Mode Results -->
+                    {% if verbose and results.verbose_calc %}
+                    <div class="mt-4">
+                        <h6 class="mb-3">
+                            <i class="fas fa-list-ul me-2"></i>Detailed Calculation Breakdown
+                        </h6>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Element</th>
+                                        <th>Count</th>
+                                        <th>Atomic Mass (g/mol)</th>
+                                        <th>Total Mass (g/mol)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for calc in results.verbose_calc %}
+                                    <tr>
+                                        <td class="font-monospace">{{ calc.element }}</td>
+                                        <td>{{ calc.count }}</td>
+                                        <td>{{ "%.3f"|format(calc.atomic_mass) }}</td>
+                                        <td class="fw-bold">{{ "%.3f"|format(calc.total_mass) }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr class="table-dark">
+                                        <td colspan="3" class="fw-bold">Total Molar Mass:</td>
+                                        <td class="fw-bold text-info">{{ "%.3f"|format(results.molar_mass) }} g/mol</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Element Composition -->
+                    <div class="mt-4">
+                        <h6 class="mb-3">
+                            <i class="fas fa-atom me-2"></i>Element Composition
+                        </h6>
+                        <div class="row g-2">
+                            {% for element, count in results.element_counts.items() %}
+                            <div class="col-auto">
+                                <span class="badge bg-secondary">
+                                    {{ element }}<sub>{{ count if count > 1 else '' }}</sub>
+                                </span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Auto-format chemical formulas for better readability
+document.addEventListener('DOMContentLoaded', function() {
+    const compoundInput = document.getElementById('compound');
+    
+    // Add examples on focus
+    compoundInput.addEventListener('focus', function() {
+        this.setAttribute('placeholder', 'Examples: H2SO4, Ca(OH)2, CH3(CH2)3OH, Mg3(PO4)2');
+    });
+    
+    compoundInput.addEventListener('blur', function() {
+        this.setAttribute('placeholder', 'e.g., H2SO4, Ca(OH)2, CH3(CH2)3OH');
+    });
+});
+</script>
+{% endblock %}
