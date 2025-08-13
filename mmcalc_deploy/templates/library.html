@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}MMCalc Web - Compound Library{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    <i class="fas fa-book me-2"></i>Compound Library
+                </h2>
+                <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Calculator
+                </a>
+            </div>
+
+            <!-- Add New Compound Form -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-plus me-2"></i>Add New Compound
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('add_compound') }}">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="name" class="form-label">Compound Name</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="name" 
+                                       name="name" 
+                                       placeholder="e.g., Sulfuric Acid"
+                                       required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="formula" class="form-label">Chemical Formula</label>
+                                <input type="text" 
+                                       class="form-control font-monospace" 
+                                       id="formula" 
+                                       name="formula" 
+                                       placeholder="e.g., H2SO4"
+                                       required>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-save me-2"></i>Add Compound
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Saved Compounds -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list me-2"></i>Saved Compounds
+                        <span class="badge bg-secondary ms-2">{{ compounds|length }}</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if compounds %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Formula</th>
+                                    <th>Molar Mass (g/mol)</th>
+                                    <th>Added</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for compound in compounds %}
+                                <tr>
+                                    <td class="fw-semibold">{{ compound.name }}</td>
+                                    <td class="font-monospace">{{ compound.formula }}</td>
+                                    <td class="text-info">{{ "%.3f"|format(compound.molar_mass) }}</td>
+                                    <td class="text-muted small">
+                                        {{ compound.created_at.strftime('%Y-%m-%d %H:%M') if compound.created_at else 'Unknown' }}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ url_for('use_compound', compound_id=compound.id, mode='1') }}" 
+                                               class="btn btn-sm btn-outline-primary" 
+                                               title="Use in Mode 1">
+                                                <i class="fas fa-atom"></i>
+                                            </a>
+                                            <a href="{{ url_for('use_compound', compound_id=compound.id, mode='2') }}" 
+                                               class="btn btn-sm btn-outline-success" 
+                                               title="Use in Mode 2">
+                                                <i class="fas fa-balance-scale"></i>
+                                            </a>
+                                            <a href="{{ url_for('use_compound', compound_id=compound.id, mode='3') }}" 
+                                               class="btn btn-sm btn-outline-warning" 
+                                               title="Use in Mode 3">
+                                                <i class="fas fa-vial"></i>
+                                            </a>
+                                            <a href="{{ url_for('delete_compound', compound_id=compound.id) }}" 
+                                               class="btn btn-sm btn-outline-danger" 
+                                               onclick="return confirm('Are you sure you want to delete {{ compound.name }}?')"
+                                               title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No compounds saved yet</h5>
+                        <p class="text-muted">Add your first compound using the form above to get started.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Usage Instructions -->
+            <div class="card mt-4 border-info">
+                <div class="card-header bg-info text-dark">
+                    <h6 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>How to Use the Library
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-plus text-success me-2"></i>Adding Compounds</h6>
+                            <ul class="small mb-0">
+                                <li>Enter a descriptive name for easy identification</li>
+                                <li>Use standard chemical formulas (e.g., H2SO4, Ca(OH)2)</li>
+                                <li>The system will validate and calculate molar mass automatically</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-play text-primary me-2"></i>Using Compounds</h6>
+                            <ul class="small mb-0">
+                                <li>Click the colored icons to use in different calculation modes</li>
+                                <li><i class="fas fa-atom text-primary me-1"></i> Mode 1: Molar mass only</li>
+                                <li><i class="fas fa-balance-scale text-success me-1"></i> Mode 2: Mass + reagent</li>
+                                <li><i class="fas fa-vial text-warning me-1"></i> Mode 3: Mass to moles</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Auto-focus on name field when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('name').focus();
+    
+    // Add formula validation
+    const formulaInput = document.getElementById('formula');
+    formulaInput.addEventListener('input', function() {
+        // Remove any spaces
+        this.value = this.value.replace(/\s/g, '');
+    });
+});
+</script>
+{% endblock %}

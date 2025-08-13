@@ -1,0 +1,230 @@
+/* Custom styles for MMCalc Web */
+
+/* Modern Logo Styling */
+.modern-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem 0;
+}
+
+.logo-container {
+    text-align: center;
+}
+
+.logo-text {
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 800;
+    font-size: 4rem;
+    line-height: 1;
+    letter-spacing: -0.02em;
+}
+
+.logo-m1, .logo-m2 {
+    font-weight: 900;
+}
+
+.logo-calc {
+    font-weight: 700;
+}
+
+.logo-subtitle {
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 400;
+    font-size: 1.5rem;
+    margin-top: -0.5rem;
+    letter-spacing: 0.1em;
+}
+
+@media (max-width: 768px) {
+    .logo-text {
+        font-size: 3rem;
+    }
+    
+    .logo-subtitle {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .logo-text {
+        font-size: 2.5rem;
+    }
+    
+    .logo-subtitle {
+        font-size: 1rem;
+    }
+}
+
+/* Result boxes */
+.result-box {
+    background: var(--bs-dark);
+    transition: all 0.3s ease;
+}
+
+.result-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Chemical formula styling */
+.font-monospace {
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+}
+
+/* Subscript styling for chemical formulas */
+sub {
+    font-size: 0.8em;
+    vertical-align: sub;
+}
+
+/* Navbar custom styling */
+.navbar-brand {
+    font-size: 1.5rem;
+}
+
+.navbar-text {
+    opacity: 0.7;
+}
+
+/* Card hover effects */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Button hover effects for mode selection */
+.btn-outline-primary:hover,
+.btn-outline-success:hover,
+.btn-outline-warning:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Table styling improvements */
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: var(--bs-light);
+}
+
+.table-striped tbody tr:nth-of-type(odd) td {
+    background-color: rgba(255,255,255,0.05);
+}
+
+/* Footer styling */
+footer {
+    background: var(--bs-dark);
+    margin-top: auto;
+}
+
+/* Responsive text scaling */
+@media (max-width: 576px) {
+    .display-6 {
+        font-size: 1.75rem;
+    }
+    
+    .lead {
+        font-size: 1rem;
+    }
+}
+
+/* Form control focus states */
+.form-control:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Alert improvements */
+.alert {
+    border: none;
+    border-radius: 0.5rem;
+}
+
+/* Badge improvements */
+.badge {
+    font-size: 0.8rem;
+}
+
+/* Loading animation for form submissions */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Print styles */
+@media print {
+    .navbar,
+    .btn,
+    footer {
+        display: none !important;
+    }
+    
+    .card {
+        border: 1px solid #000 !important;
+        box-shadow: none !important;
+    }
+    
+    .hero-ascii {
+        display: none;
+    }
+}
+
+/* Error state styling */
+.is-invalid {
+    border-color: var(--bs-danger);
+}
+
+.invalid-feedback {
+    display: block;
+    color: var(--bs-danger);
+}
+
+/* Success state styling */
+.is-valid {
+    border-color: var(--bs-success);
+}
+
+.valid-feedback {
+    display: block;
+    color: var(--bs-success);
+}
+
+/* Accessibility improvements */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .card {
+        border: 2px solid var(--bs-light);
+    }
+    
+    .btn-outline-primary,
+    .btn-outline-success,
+    .btn-outline-warning {
+        border-width: 2px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
