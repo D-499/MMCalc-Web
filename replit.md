@@ -2,19 +2,31 @@
 
 ## Overview
 
-MMCalc Web is a Flask-based web application that provides professional chemistry tools for calculating molar masses, reagent masses, and moles with precision formatting for analytical chemistry applications. The application is based on IUPAC 1995 Atomic Weights standards and offers multiple calculation modes along with a compound library for saving frequently used chemical formulas.
+MMCalc Web is a Flask-based web application that provides chemistry tools for calculating molar masses, reagent masses, and moles with precision formatting. The application is based on IUPAC 1995 Atomic Weights standards and offers multiple calculation modes along with a compound library for saving frequently used chemical formulas. Version 0.1.0 represents a complete web modernization of the original MMCalc Python CLI v0.6.2.
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes (August 2025)
+
+- Updated to semantic versioning v0.1.0 based on MMCalc Python CLI v0.6.2
+- Replaced ASCII art logo with modern typography design using same color scheme
+- Changed default units to mmol for modes 2 and 3 with toggle functionality  
+- Added comprehensive settings menu for unit preferences and precision control
+- Implemented calculation history with pagination and management features
+- Added "Add to Library" functionality directly from calculation results
+- Integrated "Import from Library" dropdown in calculation forms
+- Enhanced user experience with unit switcher and interactive features
+- Updated descriptions: main tagline simplified, added UPLB acknowledgment
+
 ## System Architecture
 
 ### Frontend Architecture
 - **Template Engine**: Jinja2 templates with Bootstrap-based responsive design
-- **CSS Framework**: Bootstrap with dark theme and custom CSS for chemical formula styling
-- **JavaScript**: Vanilla JavaScript for form validation, real-time input enhancement, and user experience improvements
-- **UI Components**: Dark-themed interface with ASCII art branding, responsive navigation, and interactive forms
+- **CSS Framework**: Bootstrap with dark theme and custom CSS for modern logo and chemical formula styling
+- **JavaScript**: Enhanced vanilla JavaScript for form validation, unit switching, library import, and interactive features
+- **UI Components**: Dark-themed interface with modern typography logo, responsive navigation, unit toggles, and calculation history
 
 ### Backend Architecture
 - **Web Framework**: Flask with SQLAlchemy ORM for database operations
@@ -29,11 +41,17 @@ Preferred communication style: Simple, everyday language.
 ### Data Storage Solutions
 - **Primary Database**: SQLite by default with PostgreSQL support via environment configuration
 - **ORM**: SQLAlchemy with DeclarativeBase for model definitions
-- **Schema**: Simple compound storage with name, formula, molar mass, and timestamp fields
+- **Schema**: Three main models:
+  - SavedCompound: Library storage with name, formula, molar mass, and timestamp
+  - CalculationHistory: Complete calculation records with mode, inputs, results, and units
+  - UserSettings: Configurable preferences for units and precision
 - **Connection Pooling**: Configured with pool recycling and pre-ping for reliability
 
-### Authentication and Authorization
-- **Current State**: No authentication system implemented
+### User Experience Features
+- **Unit Management**: Default mmol units with mol/mmol toggle for analytical chemistry workflows
+- **Settings System**: Persistent user preferences for units and decimal precision
+- **History Tracking**: Automatic saving and management of all calculations with pagination
+- **Library Integration**: Direct import from compound library and add-to-library from results
 - **Session Security**: Secret key-based session management for flash messages and user state
 
 ## External Dependencies

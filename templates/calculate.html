@@ -37,45 +37,93 @@
                             <label for="compound" class="form-label">
                                 <i class="fas fa-flask me-1"></i>Chemical Formula
                             </label>
-                            <input type="text" 
-                                   class="form-control form-control-lg font-monospace" 
-                                   id="compound" 
-                                   name="compound" 
-                                   value="{{ compound if compound else '' }}"
-                                   placeholder="e.g., H2SO4, Ca(OH)2, CH3(CH2)3OH"
-                                   required>
+                            <div class="input-group">
+                                <input type="text" 
+                                       class="form-control form-control-lg font-monospace" 
+                                       id="compound" 
+                                       name="compound" 
+                                       value="{{ compound if compound else '' }}"
+                                       placeholder="e.g., H2SO4, Ca(OH)2, CH3(CH2)3OH"
+                                       required>
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" 
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-book"></i> Import
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" style="max-height: 300px; overflow-y: auto;">
+                                    {% if library_compounds %}
+                                        {% for compound_item in library_compounds %}
+                                        <li>
+                                            <a class="dropdown-item library-import" href="#" 
+                                               data-formula="{{ compound_item.formula }}"
+                                               data-name="{{ compound_item.name }}">
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="fw-semibold">{{ compound_item.name }}</span>
+                                                    <span class="font-monospace text-muted">{{ compound_item.formula }}</span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        {% endfor %}
+                                    {% else %}
+                                        <li><span class="dropdown-item-text text-muted">No compounds in library</span></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
                             <div class="form-text">
-                                Enter the chemical formula. Supports parentheses and complex structures.
+                                Enter the chemical formula or import from library. Supports parentheses and complex structures.
                                 <strong>Examples:</strong> H₂SO₄, Ca(OH)₂, CH₃(CH₂)₃OH, Mg₃(PO₄)₂
                             </div>
                         </div>
+
+                        <!-- Unit Selector for Modes 2 & 3 -->
+                        {% if mode == '2' or mode == '3' %}
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-balance-scale me-1"></i>Unit
+                            </label>
+                            <div class="btn-group w-100" role="group" aria-label="Unit selector">
+                                <input type="radio" class="btn-check" name="unit" id="unit_mmol" 
+                                       value="mmol" {{ 'checked' if default_unit == 'mmol' else '' }}>
+                                <label class="btn btn-outline-primary" for="unit_mmol">mmol</label>
+                                
+                                <input type="radio" class="btn-check" name="unit" id="unit_mol" 
+                                       value="mol" {{ 'checked' if default_unit == 'mol' else '' }}>
+                                <label class="btn btn-outline-primary" for="unit_mol">mol</label>
+                            </div>
+                        </div>
+                        {% endif %}
 
                         <!-- Mode-specific inputs -->
                         {% if mode == '2' %}
                         <div class="mb-3">
                             <label for="moles" class="form-label">
-                                <i class="fas fa-calculator me-1"></i>Number of Moles
+                                <i class="fas fa-calculator me-1"></i>Amount of Substance
                             </label>
-                            <input type="number" 
-                                   class="form-control" 
-                                   id="moles" 
-                                   name="moles" 
-                                   step="any"
-                                   placeholder="Enter moles (e.g., 0.5, 1.25)"
-                                   required>
+                            <div class="input-group">
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="moles" 
+                                       name="moles" 
+                                       step="any"
+                                       placeholder="e.g., 0.5, 1.25"
+                                       required>
+                                <span class="input-group-text unit-display">{{ default_unit }}</span>
+                            </div>
                         </div>
                         {% elif mode == '3' %}
                         <div class="mb-3">
                             <label for="mass" class="form-label">
-                                <i class="fas fa-weight me-1"></i>Mass (grams)
+                                <i class="fas fa-weight me-1"></i>Mass
                             </label>
-                            <input type="number" 
-                                   class="form-control" 
-                                   id="mass" 
-                                   name="mass" 
-                                   step="any"
-                                   placeholder="Enter mass in grams (e.g., 10.5, 25.0)"
-                                   required>
+                            <div class="input-group">
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="mass" 
+                                       name="mass" 
+                                       step="any"
+                                       placeholder="e.g., 10.5, 25.0"
+                                       required>
+                                <span class="input-group-text">g</span>
+                            </div>
                         </div>
                         {% endif %}
 
@@ -131,8 +179,8 @@
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
                             <div class="result-box p-3 border rounded">
-                                <h6 class="text-muted mb-2">Moles</h6>
-                                <h4 class="text-secondary">{{ results.moles }} mol</h4>
+                                <h6 class="text-muted mb-2">Amount of Substance</h6>
+                                <h4 class="text-secondary">{{ results.moles_input }} {{ results.unit }}</h4>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -152,12 +200,33 @@
                         </div>
                         <div class="col-md-6">
                             <div class="result-box p-3 border rounded">
-                                <h6 class="text-muted mb-2">Calculated Moles</h6>
-                                <h4 class="text-success">{{ "%.6f"|format(results.calculated_moles) }} mol</h4>
+                                <h6 class="text-muted mb-2">Amount of Substance</h6>
+                                <h4 class="text-success">{{ "%.6f"|format(results.calculated_moles) }} {{ results.unit }}</h4>
                             </div>
                         </div>
                     </div>
                     {% endif %}
+
+                    <!-- Add to Library Section -->
+                    <div class="mt-4">
+                        <div class="card bg-dark border-secondary">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <i class="fas fa-plus-circle me-2"></i>Add to Library
+                                </h6>
+                                <p class="card-text small">Save this compound to your library for quick access in future calculations.</p>
+                                <form action="{{ url_for('add_to_library_from_result') }}" method="POST" class="d-flex gap-2">
+                                    <input type="hidden" name="formula" value="{{ results.compound }}">
+                                    <input type="hidden" name="molar_mass" value="{{ results.molar_mass }}">
+                                    <input type="text" class="form-control form-control-sm" name="name" 
+                                           placeholder="Enter compound name (e.g., Sulfuric Acid)" required>
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        <i class="fas fa-save me-1"></i>Add
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Verbose Mode Results -->
                     {% if verbose and results.verbose_calc %}
@@ -221,18 +290,109 @@
 
 {% block scripts %}
 <script>
-// Auto-format chemical formulas for better readability
+// Enhanced calculator functionality
 document.addEventListener('DOMContentLoaded', function() {
     const compoundInput = document.getElementById('compound');
+    const unitDisplays = document.querySelectorAll('.unit-display');
+    const unitRadios = document.querySelectorAll('input[name="unit"]');
+    const libraryImports = document.querySelectorAll('.library-import');
     
     // Add examples on focus
-    compoundInput.addEventListener('focus', function() {
-        this.setAttribute('placeholder', 'Examples: H2SO4, Ca(OH)2, CH3(CH2)3OH, Mg3(PO4)2');
+    if (compoundInput) {
+        compoundInput.addEventListener('focus', function() {
+            this.setAttribute('placeholder', 'Examples: H2SO4, Ca(OH)2, CH3(CH2)3OH, Mg3(PO4)2');
+        });
+        
+        compoundInput.addEventListener('blur', function() {
+            this.setAttribute('placeholder', 'e.g., H2SO4, Ca(OH)2, CH3(CH2)3OH');
+        });
+    }
+    
+    // Unit switcher functionality
+    unitRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            const selectedUnit = this.value;
+            unitDisplays.forEach(display => {
+                display.textContent = selectedUnit;
+            });
+            
+            // Update placeholder text based on unit
+            const molesInput = document.getElementById('moles');
+            if (molesInput) {
+                if (selectedUnit === 'mmol') {
+                    molesInput.setAttribute('placeholder', 'e.g., 0.5, 12.5, 100');
+                } else {
+                    molesInput.setAttribute('placeholder', 'e.g., 0.0005, 0.0125, 0.1');
+                }
+            }
+        });
     });
     
-    compoundInput.addEventListener('blur', function() {
-        this.setAttribute('placeholder', 'e.g., H2SO4, Ca(OH)2, CH3(CH2)3OH');
+    // Library import functionality
+    libraryImports.forEach(importLink => {
+        importLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            const formula = this.getAttribute('data-formula');
+            const name = this.getAttribute('data-name');
+            
+            if (compoundInput && formula) {
+                compoundInput.value = formula;
+                compoundInput.focus();
+                
+                // Show brief confirmation
+                const dropdown = this.closest('.dropdown-menu');
+                if (dropdown) {
+                    const button = dropdown.previousElementSibling;
+                    const originalHtml = button.innerHTML;
+                    button.innerHTML = '<i class="fas fa-check text-success"></i> Imported';
+                    button.classList.add('btn-success');
+                    button.classList.remove('btn-outline-secondary');
+                    
+                    setTimeout(() => {
+                        button.innerHTML = originalHtml;
+                        button.classList.remove('btn-success');
+                        button.classList.add('btn-outline-secondary');
+                    }, 1500);
+                }
+            }
+        });
     });
+    
+    // Initialize unit display on page load
+    const checkedUnit = document.querySelector('input[name="unit"]:checked');
+    if (checkedUnit) {
+        unitDisplays.forEach(display => {
+            display.textContent = checkedUnit.value;
+        });
+    }
+    
+    // Auto-focus compound name input in add to library form
+    const addToLibraryInput = document.querySelector('input[name="name"]');
+    if (addToLibraryInput) {
+        addToLibraryInput.addEventListener('focus', function() {
+            // Suggest compound name based on formula
+            const formula = document.querySelector('input[name="formula"]').value;
+            if (formula && !this.value) {
+                // Simple formula-to-name suggestions
+                const suggestions = {
+                    'H2SO4': 'Sulfuric Acid',
+                    'HCl': 'Hydrochloric Acid',
+                    'NaOH': 'Sodium Hydroxide',
+                    'Ca(OH)2': 'Calcium Hydroxide',
+                    'NaCl': 'Sodium Chloride',
+                    'CaCl2': 'Calcium Chloride',
+                    'H2O': 'Water',
+                    'C6H12O6': 'Glucose',
+                    'CH3COOH': 'Acetic Acid',
+                    'NH3': 'Ammonia'
+                };
+                
+                if (suggestions[formula]) {
+                    this.setAttribute('placeholder', suggestions[formula]);
+                }
+            }
+        });
+    }
 });
 </script>
 {% endblock %}

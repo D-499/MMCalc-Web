@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}MMCalc Web - Calculation History{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    <i class="fas fa-history me-2"></i>Calculation History
+                </h2>
+                <div>
+                    {% if history %}
+                    <a href="{{ url_for('clear_history') }}" class="btn btn-outline-danger me-2" 
+                       onclick="return confirm('Are you sure you want to clear all history?')">
+                        <i class="fas fa-trash me-1"></i>Clear All
+                    </a>
+                    {% endif %}
+                    <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Back to Calculator
+                    </a>
+                </div>
+            </div>
+
+            <!-- History Items -->
+            {% if history %}
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Formula</th>
+                                    <th>Mode</th>
+                                    <th>Molar Mass</th>
+                                    <th>Input</th>
+                                    <th>Result</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in history %}
+                                <tr>
+                                    <td class="text-muted small">
+                                        {{ item.created_at.strftime('%Y-%m-%d %H:%M') }}
+                                    </td>
+                                    <td class="font-monospace">{{ item.formula }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'primary' if item.mode == '1' else 'success' if item.mode == '2' else 'warning' }}">
+                                            Mode {{ item.mode }}
+                                        </span>
+                                    </td>
+                                    <td class="text-info">{{ "%.3f"|format(item.molar_mass) }} g/mol</td>
+                                    <td>
+                                        {% if item.mode == '2' and item.input_value %}
+                                            {{ item.input_value }} {{ item.unit }}
+                                        {% elif item.mode == '3' and item.input_value %}
+                                            {{ "%.4f"|format(item.input_value) }} g
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if item.mode == '2' and item.result_value %}
+                                            {{ "%.4f"|format(item.result_value) }} g
+                                        {% elif item.mode == '3' and item.result_value %}
+                                            {{ "%.6f"|format(item.result_value) }} {{ item.unit }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ url_for('calculate', mode=item.mode) }}?compound={{ item.formula }}" 
+                                               class="btn btn-sm btn-outline-primary" 
+                                               title="Recalculate">
+                                                <i class="fas fa-redo"></i>
+                                            </a>
+                                            <a href="{{ url_for('delete_history_item', history_id=item.id) }}" 
+                                               class="btn btn-sm btn-outline-danger" 
+                                               onclick="return confirm('Delete this history item?')"
+                                               title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            {% if pagination.pages > 1 %}
+            <nav aria-label="History pagination" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if pagination.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('history', page=pagination.prev_num) }}">Previous</a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for page_num in pagination.iter_pages() %}
+                        {% if page_num %}
+                            {% if page_num != pagination.page %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('history', page=page_num) }}">{{ page_num }}</a>
+                            </li>
+                            {% else %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ page_num }}</span>
+                            </li>
+                            {% endif %}
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if pagination.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('history', page=pagination.next_num) }}">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+
+            {% else %}
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center py-5">
+                        <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No calculation history yet</h5>
+                        <p class="text-muted">Your calculation history will appear here after you perform calculations.</p>
+                        <a href="{{ url_for('index') }}" class="btn btn-primary">
+                            <i class="fas fa-calculator me-2"></i>Start Calculating
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

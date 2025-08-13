@@ -1,17 +1,58 @@
 /* Custom styles for MMCalc Web */
 
-/* Hero ASCII Art Styling */
-.hero-ascii {
-    font-family: 'Courier New', monospace;
-    font-size: 0.65rem;
-    line-height: 1.1;
-    white-space: pre;
-    overflow-x: auto;
+/* Modern Logo Styling */
+.modern-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem 0;
+}
+
+.logo-container {
+    text-align: center;
+}
+
+.logo-text {
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 800;
+    font-size: 4rem;
+    line-height: 1;
+    letter-spacing: -0.02em;
+}
+
+.logo-m1, .logo-m2 {
+    font-weight: 900;
+}
+
+.logo-calc {
+    font-weight: 700;
+}
+
+.logo-subtitle {
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 400;
+    font-size: 1.5rem;
+    margin-top: -0.5rem;
+    letter-spacing: 0.1em;
 }
 
 @media (max-width: 768px) {
-    .hero-ascii {
-        font-size: 0.35rem;
+    .logo-text {
+        font-size: 3rem;
+    }
+    
+    .logo-subtitle {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .logo-text {
+        font-size: 2.5rem;
+    }
+    
+    .logo-subtitle {
+        font-size: 1rem;
     }
 }
 

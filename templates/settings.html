@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}MMCalc Web - Settings{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    <i class="fas fa-cog me-2"></i>Settings
+                </h2>
+                <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Calculator
+                </a>
+            </div>
+
+            <!-- Settings Form -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-sliders-h me-2"></i>Calculator Preferences
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <!-- Default Unit -->
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="fas fa-balance-scale me-1"></i>Default Unit for Modes 2 & 3
+                            </label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="default_unit" 
+                                       id="unit_mmol" value="mmol" 
+                                       {{ 'checked' if settings.default_unit == 'mmol' else '' }}>
+                                <label class="form-check-label" for="unit_mmol">
+                                    <strong>mmol</strong> (millimoles) - Default, more common in analytical chemistry
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="default_unit" 
+                                       id="unit_mol" value="mol" 
+                                       {{ 'checked' if settings.default_unit == 'mol' else '' }}>
+                                <label class="form-check-label" for="unit_mol">
+                                    <strong>mol</strong> (moles) - Standard SI unit
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                This sets the default unit for mole calculations. You can still toggle between units during calculations.
+                            </div>
+                        </div>
+
+                        <!-- Precision Settings -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label for="precision_molar_mass" class="form-label">
+                                    <i class="fas fa-atom me-1"></i>Molar Mass Precision
+                                </label>
+                                <select class="form-select" id="precision_molar_mass" name="precision_molar_mass">
+                                    <option value="1" {{ 'selected' if settings.precision_molar_mass == '1' else '' }}>1 decimal place</option>
+                                    <option value="2" {{ 'selected' if settings.precision_molar_mass == '2' else '' }}>2 decimal places</option>
+                                    <option value="3" {{ 'selected' if settings.precision_molar_mass == '3' else '' }}>3 decimal places</option>
+                                    <option value="4" {{ 'selected' if settings.precision_molar_mass == '4' else '' }}>4 decimal places</option>
+                                </select>
+                                <div class="form-text">Default: 3 (IUPAC standard)</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="precision_reagent_mass" class="form-label">
+                                    <i class="fas fa-weight me-1"></i>Reagent Mass Precision
+                                </label>
+                                <select class="form-select" id="precision_reagent_mass" name="precision_reagent_mass">
+                                    <option value="2" {{ 'selected' if settings.precision_reagent_mass == '2' else '' }}>2 decimal places</option>
+                                    <option value="3" {{ 'selected' if settings.precision_reagent_mass == '3' else '' }}>3 decimal places</option>
+                                    <option value="4" {{ 'selected' if settings.precision_reagent_mass == '4' else '' }}>4 decimal places</option>
+                                    <option value="5" {{ 'selected' if settings.precision_reagent_mass == '5' else '' }}>5 decimal places</option>
+                                </select>
+                                <div class="form-text">Default: 4 (analytical balance)</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="precision_moles" class="form-label">
+                                    <i class="fas fa-vial me-1"></i>Moles Precision
+                                </label>
+                                <select class="form-select" id="precision_moles" name="precision_moles">
+                                    <option value="3" {{ 'selected' if settings.precision_moles == '3' else '' }}>3 decimal places</option>
+                                    <option value="4" {{ 'selected' if settings.precision_moles == '4' else '' }}>4 decimal places</option>
+                                    <option value="5" {{ 'selected' if settings.precision_moles == '5' else '' }}>5 decimal places</option>
+                                    <option value="6" {{ 'selected' if settings.precision_moles == '6' else '' }}>6 decimal places</option>
+                                    <option value="7" {{ 'selected' if settings.precision_moles == '7' else '' }}>7 decimal places</option>
+                                </select>
+                                <div class="form-text">Default: 6 (high precision)</div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Save Settings
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Information Card -->
+            <div class="card mt-4 border-info">
+                <div class="card-header bg-info text-dark">
+                    <h6 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>About These Settings
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-balance-scale text-primary me-2"></i>Unit Selection</h6>
+                            <ul class="small mb-0">
+                                <li><strong>mmol (millimoles):</strong> 1/1000 of a mole, commonly used in analytical chemistry</li>
+                                <li><strong>mol (moles):</strong> Standard SI base unit for amount of substance</li>
+                                <li>You can always toggle between units during calculations</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-ruler text-success me-2"></i>Precision Guidelines</h6>
+                            <ul class="small mb-0">
+                                <li><strong>Molar Mass:</strong> 3 decimal places match IUPAC atomic weights precision</li>
+                                <li><strong>Reagent Mass:</strong> 4 decimal places for analytical balance accuracy</li>
+                                <li><strong>Moles:</strong> 6 decimal places for high precision calculations</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

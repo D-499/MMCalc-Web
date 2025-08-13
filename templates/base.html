@@ -17,7 +17,7 @@
             <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">
                 <i class="fas fa-atom me-2"></i>MMCalc Web
             </a>
-            <span class="navbar-text small">v0.6.2 - Based on IUPAC 1995 Atomic Weights</span>
+            <span class="navbar-text small">v0.1.0 - Based on MMCalc Python CLI v0.6.2</span>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -33,6 +33,16 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('library') }}">
                             <i class="fas fa-book me-1"></i>Library
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('history') }}">
+                            <i class="fas fa-history me-1"></i>History
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('settings') }}">
+                            <i class="fas fa-cog me-1"></i>Settings
                         </a>
                     </li>
                 </ul>
@@ -62,7 +72,7 @@
     <!-- Footer -->
     <footer class="mt-5 py-4 border-top">
         <div class="container text-center">
-            <p class="mb-1"><strong>MMCalc Web version 0.6.2</strong> by JEFDadea</p>
+            <p class="mb-1"><strong>MMCalc Web version 0.1.0</strong> by JEFDadea</p>
             <p class="mb-1 small text-muted">All Rights Reserved 2025</p>
             <p class="small text-muted">
                 Contains atomic masses up to Uranium<br>
